@@ -7,11 +7,12 @@ import {
   Button,
   SafeAreaView,
 } from "react-native";
-import { useState, useEffect } from "react";
-import { lightBg, smallSpacing, spacing } from "./theme";
+import { useState } from "react";
+import { lightBg, spacing } from "./theme";
 import generatePassword from "./lib/generatePassword";
 import Slider from "@react-native-community/slider";
 import Checkbox from "expo-checkbox";
+import * as Clipboard from 'expo-clipboard';
 
 export default function App() {
   const [text, updateText] = useState("");
@@ -31,6 +32,16 @@ export default function App() {
     var pw = generatePassword(options);
     updateText(pw);
   };
+
+  const onPressTextInput = () => {
+    if(!text) {
+      alert('Press generate to make a password!');
+    }
+    else{
+      Clipboard.setString(text);
+      alert("Copied to clipboard!");
+    }
+  }
 
   return (
     <SafeAreaView style={{flex: 1,}}>
@@ -80,6 +91,7 @@ export default function App() {
           onChangeText={updateText}
           style={styles.textInput}
           editable={false}
+          onPressIn={onPressTextInput}
         />
         <Button title="Generate!" onPress={generate} style={styles.button} />
         <Text style={styles.fixedFooter}>github.com/dhisonp</Text>
