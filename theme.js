@@ -1,2 +1,3 @@
-export const spacing = 6;
-export const smallSpacing = 3;
+export const spacing = 8;
+export const smallSpacing = 4;
+export const lightBg = '#efefef';

@@ -1,52 +1,91 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  SafeAreaView,
+} from "react-native";
 import { useState, useEffect } from "react";
-import { smallSpacing, spacing } from "./theme";
+import { lightBg, smallSpacing, spacing } from "./theme";
 import generatePassword from "./lib/generatePassword";
 import Slider from "@react-native-community/slider";
-import CheckBox from "@react-native-community/checkbox";
+import Checkbox from "expo-checkbox";
 
 export default function App() {
-  const title = "Welcome to the Simple Password Generator";
   const [text, updateText] = useState("");
   const [length, updateLength] = useState(10);
   const [isUpperCase, updateUpperCase] = useState(true);
   const [isSymbols, updateSymbols] = useState(false);
+  const [isNumbers, updateNumbers] = useState(true);
 
   const generate = () => {
-    var pw = generatePassword(8);
+    const options = {
+      length: length,
+      isNumbers: isNumbers,
+      isUpperCase: isUpperCase,
+      isSymbols: isSymbols,
+    };
+
+    var pw = generatePassword(options);
     updateText(pw);
   };
 
   return (
-    <View style={styles.container}>
-      {/* <Text>{title}</Text> */}
-      <StatusBar style="auto" />
-      <View style={styles.seperator} />
-      <View style={styles.row}>
-        <Text style={styles.label}>Length: </Text>
-        <Text>{length}</Text>
+    <SafeAreaView style={{flex: 1,}}>
+      <View style={styles.container}>
+        {/* <Text>{title}</Text> */}
+        <StatusBar style="auto" />
+        <View style={styles.row}>
+          <Text style={styles.label}>Length: </Text>
+          <Text>{length}</Text>
+        </View>
+        <Slider
+          minimumValue={8}
+          maximumValue={16}
+          style={styles.slider}
+          value={length}
+          onValueChange={updateLength}
+          step={1}
+        />
+        <View style={styles.row}>
+          <Text style={styles.label}>Uppercase?</Text>
+          <Checkbox
+            value={isUpperCase}
+            onValueChange={updateUpperCase}
+            style={styles.checkbox}
+          />
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Numbers?</Text>
+          <Checkbox
+            value={isNumbers}
+            onValueChange={updateNumbers}
+            style={styles.checkbox}
+          />
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Symbols?</Text>
+          <Checkbox
+            value={isSymbols}
+            onValueChange={updateSymbols}
+            style={styles.checkbox}
+          />
+        </View>
+
+        <View style={styles.separator} />
+        <TextInput
+          value={text}
+          onChangeText={updateText}
+          style={styles.textInput}
+          editable={false}
+        />
+        <Button title="Generate!" onPress={generate} style={styles.button} />
+        <Text style={styles.fixedFooter}>github.com/dhisonp</Text>
+        <Text style={styles.fixedHeader}>Simple Password Generator</Text>
       </View>
-      <Slider
-        minimumValue={8}
-        maximumValue={16}
-        style={styles.slider}
-        value={length}
-        onValueChange={updateLength}
-        step={1}
-      />
-      <View style={styles.row}>
-        <Text style={styles.label}>Uppercase?</Text>
-        <CheckBox value={isUpperCase} onValueChange={updateUpperCase} />
-      </View>
-      <Button title="Generate!" onPress={generate} style={styles.button} />
-      <TextInput
-        value={text}
-        onChangeText={updateText}
-        style={styles.textInput}
-        editable={false}
-      />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -58,20 +97,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textInput: {
-    borderWidth: 1,
     borderRadius: 4,
     borderColor: "black",
+    backgroundColor: lightBg,
     width: "80%",
+    minHeight: 40,
     margin: spacing,
     marginVertical: 16,
     padding: 4,
+    fontSize: 16,
+    textAlign: 'center'
   },
   slider: {
     width: 240,
-    height: 20,
-    marginVertical: spacing,
+    height: 40,
   },
-  seperator: {
+  separator: {
     marginVertical: 24,
   },
   label: {
@@ -80,9 +121,25 @@ const styles = StyleSheet.create({
     // margin: smallSpacing,
   },
   button: {
-    marginVertical: 14,
   },
   row: {
     flexDirection: "row",
+    marginVertical: spacing,
+    justifyContent: "space-between",
+    width: "75%",
   },
+  checkbox: {
+    // marginLeft: 24,
+  },
+  fixedFooter: {
+    color: "gray",
+    position: "absolute",
+    bottom: 0,
+  },
+  fixedHeader: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    top: 24,
+    position: 'absolute'
+  }
 });
